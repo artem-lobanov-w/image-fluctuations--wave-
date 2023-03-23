@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+
+<body>
+    <style>
+        body { margin: 0; }
+    </style>
+    <div class="main-section">
+        <div class="container-content">
+            <div class="first-block">
+                <div class=""></div>
+            </div>
+        </div>
+    </div>
+    <script id="fragShader" type="shader-code">
+        uniform vec2 res;
+        uniform sampler2D tex;
+        uniform vec3 mouse;
+        uniform vec2 variable;
+
+        void main() {
+            vec3 pixel;
+            vec2 coord = gl_FragCoord.xy;
+            vec2 uv = coord / res.xy;
+            float dist = distance(gl_FragCoord.xy,mouse.xy);
+            float lz = mouse.z / 2.0;
+            dist /= res.x;
+            float r = mouse.z / 2.0;
+            float PI = 3.1415926535;
+            float distFactor = 1.0 - dist / r;
+            float time = variable.x;
+            float timeSin = sin(cos(uv.x-time)*20.0)+ 0.5;
+            float timeCos = cos(sin(uv.y-time)*20.0)+ 0.5;
+            coord += timeSin * distFactor * 1.5 * 5.0;
+            coord += timeCos * distFactor * 1.5 * 5.0;
+            uv = coord / res.xy;
+            
+            if(dist<lz) {
+                pixel = vec3(texture2D(tex, uv).rgb);
+            } else {
+                uv = gl_FragCoord.xy / res.xy;
+                pixel = vec3(texture2D(tex, uv).rgb);
+            }
+            vec3 test = vec3(timeSin);
+            gl_FragColor = vec4(pixel,1.0);
+       }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r71/three.min.js"></script>
+    <script src="./js/js.js"></script>
+
+</body>
+
+</html>
